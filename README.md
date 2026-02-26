@@ -1,6 +1,6 @@
 # Myriad Melodies Bot
 
-Bot de détection et de frappe automatique pour le mini-jeu rythmique de Wuthering Waves.
+Bot de détection et de frappe automatique pour le mini-jeu rythmique de Genshin Impact.
 Il capture l'écran en temps réel, détecte les notes par couleur et simule les appuis clavier via le driver Interception.
 
 ## Prérequis
@@ -48,4 +48,5 @@ interception-python
 mss
 numpy
 pywin32
+
 ```
