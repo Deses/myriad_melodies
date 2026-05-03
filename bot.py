@@ -21,6 +21,7 @@ class RhythmBot:
 
     def start(self):
         self.capture.start()
+        print("[bot] started capture + watch threads")
         for key, col_x in self.config.columns.items():
             t = threading.Thread(
                 target=self._watch_column, args=(key, col_x), daemon=True
@@ -35,13 +36,20 @@ class RhythmBot:
     def _watch_column(self, key: str, col_x: float):
         cfg = self.config
         in_note = False
+        ticks = 0
         while not self._stop_event.is_set():
             kind = self.detector.detect(col_x, cfg.detect_y)
             now = time.time()
 
+            ticks += 1
+            if ticks % 500 == 0:
+                frame = self.capture.frame
+                print(f"[{key}] alive | frame={'yes' if frame is not None else 'NO'} | last_detection={kind}")
+
             if kind and not in_note and (now - self._last_hit[key]) > cfg.cooldown:
                 in_note = True
                 self._last_hit[key] = now
+                print(f"[{key}] HIT {kind}")
                 threading.Thread(
                     target=self.hitter.hit, args=(key, kind, col_x), daemon=True
                 ).start()
