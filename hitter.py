@@ -1,6 +1,6 @@
 import time
 
-import interception
+import pydirectinput
 
 from config import Config
 from detector import NoteDetector, NoteKind
@@ -14,10 +14,11 @@ class NoteHitter:
         self.detector = detector
 
     def hit(self, key: str, kind: NoteKind, col_x: float):
+        time.sleep(self.config.hit_delay)
         if kind == "yellow":
-            interception.press(key.lower())
+            pydirectinput.press(key.lower())
         elif kind == "purple":
-            interception.key_down(key.lower())
+            pydirectinput.keyDown(key.lower())
             while self.detector.is_present(col_x):
                 time.sleep(self.config.hold_check_interval)
-            interception.key_up(key.lower())
+            pydirectinput.keyUp(key.lower())
