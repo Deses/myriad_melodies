@@ -1,47 +1,57 @@
-﻿# Myriad Melodies Bot
+# Myriad Melodies Bot
 
 Automatic detection and input bot for the Myriad Melodies rhythm mini-game in Genshin Impact.
-Captures the screen in real time, detects notes by color, and simulates keystrokes via the Interception kernel driver.
+Captures the screen in real time, detects notes by color, and simulates keystrokes via Win32 SendInput.
 
 ## Requirements
 
 - Windows
 - Python 3.10+
-- [Interception driver](https://github.com/oblitum/Interception) installed as administrator (reboot required)
+
+No kernel drivers needed.
 
 ## Installation
 
-Double-click `run.bat` - it will create the virtual environment, install dependencies, and launch the bot automatically.
+Double-click `run.bat` - it will auto-elevate to administrator, create the virtual environment, install dependencies, and launch the bot.
 
-> The script must be run as administrator for the Interception driver to work correctly.
+On subsequent runs it skips the install step.
 
 ## Usage
 
 Launch Genshin Impact in **borderless windowed** mode, then double-click `run.bat`.
 
-The overlay draws the monitored columns (green lines) and the detection line (cyan line).
-Press `Escape` or click **[X] Quit** to stop the bot cleanly.
+The bot finds the game window automatically by process name (`GenshinImpact.exe`) and brings it to the foreground.
+
+The overlay draws:
+- Green vertical lines - monitored lane positions
+- Red horizontal line - hit line
+- Cyan horizontal line - detection line (where notes are scanned)
+
+To stop: press `F8`, press `Escape`, or click the **[X] Quit** button on the overlay.
 
 Supported resolutions: 1920x1080, 1920x1200, 2560x1080 (UWFHD), 2560x1440 (QHD), 3440x1440 (UWQHD).
 Unknown resolutions fall back to proportional scaling from 1080p with a warning.
 
+If the wrong resolution profile is loaded, set `FORCE_RESOLUTION` at the top of `resolution.py`.
+
 ## Configuration
 
-Key parameters at the top of `main.py`:
+All tuning parameters are in `config.py`:
 
 | Parameter | Default | Description |
 |---|---|---|
-| `DETECT_Y` | profile-dependent | Y coordinate where notes are scanned |
-| `COOLDOWN` | `0.12` | Minimum seconds between hits on the same column |
-| `TOLERANCE` | `30` | Color match threshold (lower = stricter) |
-| `CONFIRM_FRAMES` | `6` | Consecutive frames without a note before releasing a hold |
+| `speed` | `660.0` | Assumed note fall speed in px/s. Controls how early keys are pressed. Higher = press earlier, lower = press later. |
+| `detect_y` | profile-dependent | Y coordinate where notes are scanned (set by resolution profile). |
+| `cooldown` | `0.1` | Minimum seconds between hits on the same column. |
+| `tolerance` | `30.0` | Color match threshold for note detection (lower = stricter). |
+| `hold_tolerance` | `60.0` | Color match threshold for detecting if a hold note is still active. |
+| `capture_interval` | `0.008` | Seconds between screen captures (~125 FPS). |
 
 ## Dependencies
 
 ```
-interception-python
+pydirectinput
 mss
 numpy
-opencv-python
 pywin32
 ```
