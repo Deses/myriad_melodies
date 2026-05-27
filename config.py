@@ -2,27 +2,30 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
+from resolution import get_profile
+
+_SCREEN_W, _SCREEN_H, _profile = get_profile()
+
+SCREEN_W = _SCREEN_W
+SCREEN_H = _SCREEN_H
+
+_cols = _profile["columns"]
+_hit_y = _profile["hit_line_y"]
+_top_y = _profile["top_y"]
+_det_y = _profile["detect_y"]
+
 
 @dataclass
 class Config:
     # X center of each lane in screen pixels. Adjust until green overlay lines are centered on the game lanes.
-    columns: dict[str, float] = field(
-        default_factory=lambda: {
-            "Q": 418.5,
-            "S": 634.5,
-            "D": 851.5,
-            "J": 1067.5,
-            "K": 1284.5,
-            "L": 1500.5,
-        }
-    )
+    columns: dict[str, float] = field(default_factory=lambda: dict(_cols))
 
-    # Y coordinate (screen pixels) of the hit line — where notes land/disappear. Align red overlay line here.
-    hit_line_y: int = 920
+    # Y coordinate (screen pixels) of the hit line - where notes land/disappear. Align red overlay line here.
+    hit_line_y: int = field(default_factory=lambda: _hit_y)
     # Y coordinate of the top of the capture zone. Should be above all notes.
-    top_y: int = 60
+    top_y: int = field(default_factory=lambda: _top_y)
     # Y coordinate where notes are scanned. Should be clearly above hit_line_y with notes fully visible.
-    detect_y: int = 850
+    detect_y: int = field(default_factory=lambda: _det_y)
 
     # How fast notes fall in pixels/second. hit_delay = (hit_line_y - detect_y) / speed.
     # BIGGER = notes assumed to fall faster = shorter wait before pressing = press EARLIER.
@@ -39,7 +42,7 @@ class Config:
     # Same threshold but for detecting if a hold note is still active (can be looser).
     hold_tolerance: float = 60.0
 
-    # Minimum seconds between hits on the same column — prevents double-triggering the same note.
+    # Minimum seconds between hits on the same column - prevents double-triggering the same note.
     cooldown: float = 0.1
     # Seconds between screen captures (~0.008 = 125 FPS). Lower = more responsive but more CPU.
     capture_interval: float = 0.008
@@ -50,7 +53,6 @@ class Config:
 
     @property
     def hit_delay(self) -> float:
-        # Seconds to wait after detecting a note before pressing the key.
         return (self.hit_line_y - self.detect_y) / self.speed
 
     @property

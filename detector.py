@@ -9,7 +9,6 @@ NoteKind = Literal["yellow", "purple"] | None
 
 
 class NoteDetector:
-    """Détecte la couleur des notes dans le frame courant."""
 
     def __init__(self, config: Config, capture: FrameCapture):
         self.config = config
@@ -45,7 +44,6 @@ class NoteDetector:
         return None
 
     def is_present(self, col_x: float) -> bool:
-        """Vérifie si une note (longue) est encore visible sur toute la colonne."""
         frame = self.capture.frame
         if frame is None:
             return False

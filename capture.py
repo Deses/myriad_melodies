@@ -8,7 +8,6 @@ from config import Config
 
 
 class FrameCapture:
-    """Capture l'écran en continu dans un thread dédié."""
 
     def __init__(self, config: Config):
         self.config = config

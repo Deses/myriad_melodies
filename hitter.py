@@ -5,9 +5,10 @@ import pydirectinput
 from config import Config
 from detector import NoteDetector, NoteKind
 
+pydirectinput.PAUSE = 0
+
 
 class NoteHitter:
-    """Traduit une détection en frappe clavier."""
 
     def __init__(self, config: Config, detector: NoteDetector):
         self.config = config

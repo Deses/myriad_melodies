@@ -8,7 +8,6 @@ from hitter import NoteHitter
 
 
 class RhythmBot:
-    """Orchestre la capture, la détection et les frappes."""
 
     def __init__(self, config: Config):
         self.config = config
