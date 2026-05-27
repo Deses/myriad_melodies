@@ -1,5 +1,5 @@
-interception-python==1.13.6
+pydirectinput==1.0.4
 mss==10.1.0
-numpy==2.2.6
+numpy>=2.0
 opencv-python==4.13.0.92
 pywin32==311

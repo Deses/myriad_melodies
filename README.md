@@ -1,52 +1,47 @@
 # Myriad Melodies Bot
 
-Bot de détection et de frappe automatique pour le mini-jeu rythmique de Genshin Impact.
-Il capture l'écran en temps réel, détecte les notes par couleur et simule les appuis clavier via le driver Interception.
+Automatic detection and input bot for the Myriad Melodies rhythm mini-game in Genshin Impact.
+Captures the screen in real time, detects notes by color, and simulates keystrokes via the Interception kernel driver.
 
-## Prérequis
+## Requirements
 
 - Windows
 - Python 3.10+
-- Driver [Interception](https://github.com/oblitum/Interception) installé en administrateur (redémarrage requis)
+- [Interception driver](https://github.com/oblitum/Interception) installed as administrator (reboot required)
 
 ## Installation
 
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-```
+Double-click `run.bat` - it will create the virtual environment, install dependencies, and launch the bot automatically.
 
-## Lancement
+> The script must be run as administrator for the Interception driver to work correctly.
 
-Double-cliquer sur `run.bat` — le script active l'environnement virtuel et lance le bot automatiquement.
+## Usage
 
-> Le script doit être exécuté en tant qu'administrateur pour que le driver Interception fonctionne correctement.
+Launch Genshin Impact in **borderless windowed** mode, then double-click `run.bat`.
 
-## Utilisation
+The overlay draws the monitored columns (green lines) and the detection line (cyan line).
+Press `Escape` or click **[X] Quit** to stop the bot cleanly.
 
-Lancer le jeu en **mode fenêtré sans bordure** en **1920×1080**, puis double-cliquer sur `run.bat`.
-
-L'overlay affiche les colonnes surveillées (lignes vertes) et la ligne de détection (ligne cyan).
-Appuyer sur `Échap` ou cliquer sur le bouton **✕ Quitter** pour arrêter proprement le bot.
+Supported resolutions: 1920x1080, 1920x1200, 2560x1080 (UWFHD), 2560x1440 (QHD), 3440x1440 (UWQHD).
+Unknown resolutions fall back to proportional scaling from 1080p with a warning.
 
 ## Configuration
 
-Les principaux paramètres se trouvent en haut de `main.py` :
+Key parameters at the top of `main.py`:
 
-| Paramètre | Valeur par défaut | Description |
+| Parameter | Default | Description |
 |---|---|---|
-| `DETECT_Y` | `850` | Hauteur de détection des notes |
-| `COOLDOWN` | `0.12` | Délai minimum entre deux frappes sur la même colonne |
-| `TOLERANCE` | `30` | Tolérance de détection des couleurs |
-| `CONFIRM_FRAMES` | `6` | Frames consécutives sans note pour relâcher un appui long |
+| `DETECT_Y` | profile-dependent | Y coordinate where notes are scanned |
+| `COOLDOWN` | `0.12` | Minimum seconds between hits on the same column |
+| `TOLERANCE` | `30` | Color match threshold (lower = stricter) |
+| `CONFIRM_FRAMES` | `6` | Consecutive frames without a note before releasing a hold |
 
-## Dépendances
+## Dependencies
 
 ```
 interception-python
 mss
 numpy
+opencv-python
 pywin32
-
 ```
