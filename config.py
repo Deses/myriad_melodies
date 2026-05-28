@@ -9,7 +9,11 @@ _SCREEN_W, _SCREEN_H, _profile = get_profile()
 SCREEN_W = _SCREEN_W
 SCREEN_H = _SCREEN_H
 
-_cols = _profile["columns"]
+# Keys pressed for each lane, left to right. Edit these to remap controls.
+KEYBINDS = ["a", "s", "d", "j", "k", "l"]
+
+_positions = list(_profile["columns"].values())
+_cols = {kb.upper(): pos for kb, pos in zip(KEYBINDS, _positions)}
 _hit_y = _profile["hit_line_y"]
 _top_y = _profile["top_y"]
 _det_y = _profile["detect_y"]

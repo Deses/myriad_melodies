@@ -20,7 +20,7 @@ if /i not "%INSTALL_PY%"=="Y" (
 )
 
 echo [*] Installing Python 3.14...
-winget install --id Python.Python.3.14 -e
+winget install --id Python.Python.3.14 -e --scope machine
 if errorlevel 1 (
     echo [!] winget install failed or was cancelled.
     pause
@@ -33,10 +33,10 @@ for /f "usebackq delims=" %%p in (`powershell -NoProfile -Command "[Environment]
 where python >nul 2>&1
 if errorlevel 1 (
     echo [*] Not in PATH yet, checking common install locations...
-    if exist "%LOCALAPPDATA%\Programs\Python\Python314\python.exe" (
-        set "PATH=%LOCALAPPDATA%\Programs\Python\Python314;%LOCALAPPDATA%\Programs\Python\Python314\Scripts;%PATH%"
-    ) else if exist "%ProgramFiles%\Python314\python.exe" (
+    if exist "%ProgramFiles%\Python314\python.exe" (
         set "PATH=%ProgramFiles%\Python314;%ProgramFiles%\Python314\Scripts;%PATH%"
+    ) else if exist "%LOCALAPPDATA%\Programs\Python\Python314\python.exe" (
+        set "PATH=%LOCALAPPDATA%\Programs\Python\Python314;%LOCALAPPDATA%\Programs\Python\Python314\Scripts;%PATH%"
     ) else (
         echo [!] Could not locate Python 3.14. Please restart this script.
         pause
