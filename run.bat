@@ -9,19 +9,50 @@ if errorlevel 1 (
 )
 
 where python >nul 2>&1
-if errorlevel 1 (
-    echo [!] Python not found.
-    set /p INSTALL_PY="    Install Python 3.14 + launcher via winget? [Y/N] "
-    if /i "%INSTALL_PY%"=="Y" (
-        echo [*] Installing Python 3.14...
-        winget install --id Python.Python.3.14 -e
-        echo [*] Done. Restart this script to continue.
-    ) else (
-        echo [!] Python is required. Aborting.
-    )
+if not errorlevel 1 goto :have_python
+
+echo [!] Python not found.
+set /p INSTALL_PY="    Install Python 3.14 via winget? [Y/N] "
+if /i not "%INSTALL_PY%"=="Y" (
+    echo [!] Python is required. Aborting.
     pause
     exit /b 1
 )
+
+echo [*] Installing Python 3.14...
+winget install --id Python.Python.3.14 -e
+if errorlevel 1 (
+    echo [!] winget install failed or was cancelled.
+    pause
+    exit /b 1
+)
+
+echo [*] Refreshing PATH...
+for /f "usebackq delims=" %%p in (`powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('PATH','Machine') + ';' + [Environment]::GetEnvironmentVariable('PATH','User')"`) do set "PATH=%%p"
+
+where python >nul 2>&1
+if errorlevel 1 (
+    echo [*] Not in PATH yet, checking common install locations...
+    if exist "%LOCALAPPDATA%\Programs\Python\Python314\python.exe" (
+        set "PATH=%LOCALAPPDATA%\Programs\Python\Python314;%LOCALAPPDATA%\Programs\Python\Python314\Scripts;%PATH%"
+    ) else if exist "%ProgramFiles%\Python314\python.exe" (
+        set "PATH=%ProgramFiles%\Python314;%ProgramFiles%\Python314\Scripts;%PATH%"
+    ) else (
+        echo [!] Could not locate Python 3.14. Please restart this script.
+        pause
+        exit /b 1
+    )
+)
+
+where python >nul 2>&1
+if errorlevel 1 (
+    echo [!] Python still not found. Please restart this script.
+    pause
+    exit /b 1
+)
+echo [*] Python ready.
+
+:have_python
 
 if not exist .venv (
     echo [*] Creating virtual environment...
