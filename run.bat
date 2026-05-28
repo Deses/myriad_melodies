@@ -8,11 +8,26 @@ if errorlevel 1 (
     exit /b
 )
 
+where python >nul 2>&1
+if errorlevel 1 (
+    echo [!] Python not found.
+    set /p INSTALL_PY="    Install Python 3.14 + launcher via winget? [Y/N] "
+    if /i "%INSTALL_PY%"=="Y" (
+        echo [*] Installing Python 3.14...
+        winget install --id Python.Python.3.14 -e
+        echo [*] Done. Restart this script to continue.
+    ) else (
+        echo [!] Python is required. Aborting.
+    )
+    pause
+    exit /b 1
+)
+
 if not exist .venv (
     echo [*] Creating virtual environment...
     python -m venv .venv
     if errorlevel 1 (
-        echo ERROR: Could not create venv. Is Python installed and in PATH?
+        echo ERROR: Could not create venv.
         pause
         exit /b 1
     )
